@@ -4,11 +4,7 @@ from pathlib import Path
 from rembg import remove, new_session
 import glob
 from tqdm import tqdm
-import shutil
-import cv2 
 from PIL import Image
-import matplotlib.pyplot as plt
-import numpy as np 
 
 
 PATH_MAIN = 'z_old/bg_remover/samples'
@@ -21,7 +17,7 @@ session = new_session()
 count = 0
 for p in mypaths:
     count += len(os.listdir(p))
-'''
+
 pbar = tqdm(total = count)
 
 for path in mypaths:
@@ -49,7 +45,7 @@ for path in mypaths:
                 pbar.update(1)
 
 pbar.close()
-'''
+
 if not os.path.exists('/Volumes/T7/Repos/z_old/bg_remover/samples/BIOs/cropped'):
     os.mkdir('/Volumes/T7/Repos/z_old/bg_remover/samples/BIOs/cropped')
 

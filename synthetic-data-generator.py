@@ -6,7 +6,6 @@ import albumentations as A
 import time
 from tqdm import tqdm
 import random
-import glob
 import datetime
 from datetime import datetime
 
@@ -115,7 +114,6 @@ def create_bg_with_noise():
     idx = np.random.randint(len(real_bg))
     bg_path = real_bg[idx]
     img_bg = cv2.imread(bg_path)
-    #img_bg = cv2.cvtColor(img_bg, cv2.COLOR_BGR2RGB)
     img_comp_bg = resize_img(img_bg, bg_height, bg_width)
 
     return img_comp_bg

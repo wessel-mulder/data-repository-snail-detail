@@ -1,16 +1,8 @@
-
 from ultralytics import YOLO
-from PIL import Image
-import cv2
-import matplotlib.pyplot as plt
 import torch
-import torchmetrics
 from torchmetrics.classification import MulticlassAveragePrecision,MulticlassConfusionMatrix,MulticlassAccuracy,MulticlassAUROC,MulticlassPrecision,MulticlassRecall
-import cv2
-from sklearn import preprocessing
 import glob
 import os 
-from numpy import asarray
 import csv
 
 models = ['gen_a','gen_d','gen_v']
