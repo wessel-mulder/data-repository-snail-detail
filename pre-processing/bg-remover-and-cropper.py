@@ -1,3 +1,5 @@
+#### Python 3.10.9
+
 import os
 import os.path 
 from pathlib import Path
@@ -6,10 +8,10 @@ import glob
 from tqdm import tqdm
 from PIL import Image
 
-
-PATH_MAIN = 'z_old/bg_remover/samples'
+PATH_MAIN = 'my_images'     
+                        # Path to folder containing one folder per class. These folders
+                        # contain all images for that class 
 myfolders = sorted(os.listdir(PATH_MAIN))
-
 mypaths = [os.path.join(PATH_MAIN, m) for m in myfolders if not m.startswith('.')]
 
 session = new_session()
@@ -30,8 +32,7 @@ for path in mypaths:
             pass
         else:
             os.makedirs(thing)
-
-        
+            
     for file in Path(path).glob('*.jpg'):
         input_path = str(file)
         file = Path(file)
@@ -46,20 +47,20 @@ for path in mypaths:
 
 pbar.close()
 
-if not os.path.exists('/Volumes/T7/Repos/z_old/bg_remover/samples/BIOs/cropped'):
-    os.mkdir('/Volumes/T7/Repos/z_old/bg_remover/samples/BIOs/cropped')
+for path in mypaths:
+    my_dir = os.path.join(path,'cropped')
 
-if not os.path.exists('/Volumes/T7/Repos/z_old/bg_remover/samples/BULs/cropped'):
-    os.mkdir('/Volumes/T7/Repos/z_old/bg_remover/samples/BULs/cropped')
+    if os.path.exists(my_dir):
+        pass
+    else:
+        os.makedirs(thing)
 
-for dir in ['BIOs','BULs']:
-    path = '/Volumes/T7/Repos/z_old/bg_remover/samples/'+dir+'/rembg/'
-    output = '/Volumes/T7/Repos/z_old/bg_remover/samples/'+dir
-    imgs = glob.glob(path+'*.jpg')
+    input = path+'/rembg/'
+    imgs = glob.glob(input+'*.jpg')
     for img_path in imgs:
         name = os.path.basename(img_path)[:-4]
         print(name)
         img = Image.open(img_path)
         img2 = img.crop(img.getbbox())
-        img2.save(output+'/cropped/'+name+'.png')
+        img2.save(path+'/cropped/'+name+'.png')
 

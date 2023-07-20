@@ -8,8 +8,9 @@ from tqdm import tqdm
 import random
 import datetime
 from datetime import datetime
+import glob
 
-### parameters
+### PARAMETERS
 # BG
 bg_width = 1080
 bg_height = 1920
@@ -22,8 +23,19 @@ snail_bright_max = 0
 snail_contrast_min = 0
 snail_contrast_max = 1
 
+### DEFINE PATHS
+PATH_TO_FOLDERS = 'my_images_path'          
+            # Folder consists of multiple folders for each genus. Each genus-
+            # folder contains multiple folders containing all images for one
+            # species
+PATH_TO_BACKGROUNDS = 'my_backgrounds_path'      
+            # Folder consists of all background images to be used
+PATH_TO_OUTPUT = 'my_output_path'
+            # Folder where output will be generated 
+
+### GET GENERA
 obj_dict = {}
-genera = sorted(os.listdir('synthetic_maker/balanced/species'))
+genera = sorted(os.listdir(PATH_TO_FOLDERS))
 genera = [genus for genus in genera if not genus.startswith('.')]
 genera = [genus for genus in genera if genus == 'Bulinus' or genus == 'Biomphalaria']
 
@@ -31,12 +43,11 @@ keys = range(len(genera))
 for i in keys:
     obj_dict[i] = {'folder': genera[i], 'longest_min': 150, 'longest_max': 200}
 
-### GET PATHS ###
-PATH_MAIN = "synthetic_maker/balanced"
+### GET SPECIES & PATHS
 for k, _ in obj_dict.items():
     genera = obj_dict[k]['folder']
 
-    species = sorted(os.listdir(os.path.join(PATH_MAIN,'species',genera)))
+    species = sorted(os.listdir(os.path.join(PATH_TO_FOLDERS,genera)))
     species = [s for s in species if not s.startswith('.')]
 
     species_dict = {}
@@ -45,16 +56,17 @@ for k, _ in obj_dict.items():
         binom = species[s]
         species_dict[s] = {'species': binom}
 
-        files_imgs = sorted(os.listdir(os.path.join(PATH_MAIN,'species', genera,binom,'cropped')))
-        files_imgs = [os.path.join(PATH_MAIN,'species',genera,binom,'cropped',f) for f in files_imgs]
+        files_imgs = sorted(os.listdir(os.path.join(PATH_TO_FOLDERS,genera,binom,'cropped')))
+        files_imgs = [os.path.join(PATH_TO_FOLDERS,genera,binom,'cropped',f) for f in files_imgs]
     
         species_dict[s]['images'] = files_imgs
     obj_dict[k]['species'] = species_dict
 
-real_bg = sorted(os.listdir('/Volumes/T7/Repos/synthetic_maker/real_grids'))
-real_bg = [os.path.join('/Volumes/T7/Repos/synthetic_maker/real_grids', f) for f in real_bg if not f.startswith('.')]
+### GET BACKGROUND PATHS
+real_bg = sorted(os.listdir(PATH_TO_BACKGROUNDS))
+real_bg = [os.path.join(PATH_TO_BACKGROUNDS, f) for f in real_bg if not f.startswith('.')]
 
-### OBJECTS & BACKGROUNDS
+### RESIZE TRANSFORM OBJECTS
 def resize_transform_obj(img, mask, longest_min, longest_max):
 
     h, w = mask.shape[0], mask.shape[1]
@@ -82,6 +94,7 @@ def resize_transform_obj(img, mask, longest_min, longest_max):
     
     return img_t
 
+### RESIZE IMAGES
 def resize_img(img, desired_max, desired_min):
 
     h, w = img.shape[0], img.shape[1]
@@ -107,28 +120,6 @@ def resize_img(img, desired_max, desired_min):
     img_r = transformed["image"]
         
     return img_r
-
-### GET BACKGROUND & COMPOSITION 
-def create_bg_with_noise():
-    
-    idx = np.random.randint(len(real_bg))
-    bg_path = real_bg[idx]
-    img_bg = cv2.imread(bg_path)
-    img_comp_bg = resize_img(img_bg, bg_height, bg_width)
-
-    return img_comp_bg
-
-### COORDINATES 
-x_es = [180,340,540,740,900]
-y_es = [160,360,560,760,960,1160,1360,1560,1760]
-total_combinations = len(x_es)*len(y_es)
-
-coord_dict = {}
-count = 1
-for x in x_es:
-    for y in y_es: 
-        coord_dict[count] = [x,y]
-        count += 1
 
 ### TRANSPARENT IMAGE FUNCTION
 def add_transparent_image(background,foreground,mask,min_length,max_length,x_coord, y_coord,transforms,label):
@@ -182,6 +173,29 @@ def add_transparent_image(background,foreground,mask,min_length,max_length,x_coo
     
     return annotations_yolo
 
+### GET BACKGROUND & COMPOSITION 
+def create_bg_with_noise():
+    
+    idx = np.random.randint(len(real_bg))
+    bg_path = real_bg[idx]
+    img_bg = cv2.imread(bg_path)
+    img_comp_bg = resize_img(img_bg, bg_height, bg_width)
+
+    return img_comp_bg
+
+### DEFINE COORDINATES 
+x_es = [180,340,540,740,900]
+y_es = [160,360,560,760,960,1160,1360,1560,1760]
+total_combinations = len(x_es)*len(y_es)
+
+coord_dict = {}
+count = 1
+for x in x_es:
+    for y in y_es: 
+        coord_dict[count] = [x,y]
+        count += 1
+
+### PASTING IMAGES AND GENERATING ANNOTATIONS
 def create_composition(img_comp_bg):
 
     r_bright = random.uniform(snail_bright_min,snail_bright_max)
@@ -228,11 +242,7 @@ def create_composition(img_comp_bg):
     bg = cv2.cvtColor(bg, cv2.COLOR_BGR2RGB)
     return bg,annotations
 
-### RUN EVERYTHING
-img_comp_bg = create_bg_with_noise()
-bg,annotations = create_composition(img_comp_bg)
-
-### GENERATE DATASET
+### GENERATE DATASET FUNCTION
 def generate_dataset(imgs_number, folder):
     time_start = time.time()
     for j in tqdm(range(imgs_number)):
@@ -257,11 +267,14 @@ def generate_dataset(imgs_number, folder):
     
     print("Generation of {} synthetic images is completed. It took {} seconds, or {} seconds per image".format(imgs_number, time_total, time_per_img))
 
-if not os.path.isdir(os.path.join('synthetic_maker/Synthetic_v4')):
-    os.makedirs(os.path.join('synthetic_maker/Synthetic_v4'))
+### CHECK IF PATH EXISTS
+if not os.path.isdir(os.path.join(PATH_TO_OUTPUT)):
+    os.makedirs(os.path.join(PATH_TO_OUTPUT))
 
-generate = 2000 
+### DEFINE NUMBER OF IMAGES TO GENERATED
+number = 100
+generate = number - len(glob.glob(os.path.join(PATH_TO_OUTPUT)))
 
-if generate > 0:
-    generate_dataset(generate, folder='synthetic_maker/Synthetic_v4')
+### GENERATE
+generate_dataset(generate, folder=PATH_TO_OUTPUT)
 

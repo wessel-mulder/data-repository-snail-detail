@@ -5,9 +5,13 @@ import glob
 import os 
 import csv
 
-models = ['gen_a','gen_d','gen_v']
+models = ['X','Y','Z']          # list of model names
+PATH_MAIN = 'mypath'            # path to to folder containing multiple folders, one per model
+                                # each of these model-folders contain a 'test' folder with test images
+                                # and weights of 
+PATH_TEST = 
 
-with open('GEN_CLS_accuracies.csv','w') as f: 
+with open('accuracies.csv','w') as f: 
     f_writer = csv.writer(f)
     f_writer.writerow(['model','species','species_count','averageprecision','accuracy','auroc','precision','recall'])
     for model in models:
