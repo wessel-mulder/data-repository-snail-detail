@@ -2,7 +2,7 @@ import os
 import glob
 import csv
 
-main = 'splitter/models_sense2'
+main = 'mypath'                     #path to folder containing splitted datasets
 dirs = sorted(os.listdir(main))
 print(dirs)
 

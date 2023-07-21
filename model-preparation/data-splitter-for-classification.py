@@ -1,3 +1,5 @@
+### this can be repeated with the commented code down below for biomphalaria and bulinus
+
 import os
 import shutil
 import glob
@@ -26,8 +28,9 @@ transforms_obj = A.Compose([
     p=1)
     ])
 
-main = 'splitter/HQ_cls'
-source = '/Volumes/T7/Repos/z_old/bg_remover/DATA'
+main = 'mypath'                 # path to folder where datasets will be generated
+source = 'mypath'               # path to folder containing the original species and their 
+                                # respective images
 
 if not os.path.exists(main):
     os.mkdir(main)

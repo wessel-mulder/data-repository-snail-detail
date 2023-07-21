@@ -4,9 +4,9 @@ import os
 import shutil
 from tqdm import tqdm
 
-main = 'splitter/models_sense2/'
-
-og = 'synthetic_maker/sensetivity'
+main = 'mypath'             # path to folder were datasets will be moved to 
+og = 'mypath'               # path to folder containing original synthetic datasets
+                            # each in their respective folder
 names = os.listdir(og)
  
 paths = [os.path.join(og,f) for f in names]

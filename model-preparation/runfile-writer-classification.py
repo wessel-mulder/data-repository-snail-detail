@@ -1,10 +1,10 @@
 import os
-main = 'splitter/HQ_cls'
+main = 'mypath'             #path to folder containing splitted folders
 dirs = os.listdir(main)
 
 for dir in dirs:
     path = os.path.join(main,dir)
-    with open('splitter/cls_runfile_example.sh','r') as example:
+    with open('runfile-example-classification.sh','r') as example:
         filedata = example.read()
     
     filedata = filedata.replace('_model_',dir)

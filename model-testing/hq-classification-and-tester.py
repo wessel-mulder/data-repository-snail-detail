@@ -5,11 +5,11 @@ import glob
 import os 
 import csv
 
-models = ['X','Y','Z']          # list of model names
+models = ['D','V','A']          # list of model names, named after the different snail views
 PATH_MAIN = 'mypath'            # path to to folder containing multiple folders, one per model
-                                # each of these model-folders contain a 'test' folder with test images
-                                # and weights of 
-PATH_TEST = 
+                                # each of these model-folders contains the weights of this model 
+                                # named 'best.pt' and folder containing the test-images named 'test'
+PATH_SOURCE = 'mypath'          # path to source images
 
 with open('accuracies.csv','w') as f: 
     f_writer = csv.writer(f)
@@ -20,29 +20,29 @@ with open('accuracies.csv','w') as f:
             with open(model+'_gg_matrix.csv','w') as h:
                 h_writer = csv.writer(h)
                 
-                model_source = '/Volumes/T7/Repos/results_HQ_cls/'+model+'/best.pt'
+                model_source = os.path.join(PATH_MAIN,model,'best.pt')
                 yolo = YOLO(model_source)
 
-                test_path = '/Volumes/T7/Repos/splitter/HQ_cls/'+model+'/test/'
+                test_path = os.path.join(PATH_MAIN,model,'test')
                 dirs = sorted(os.listdir(test_path))
 
                 counts = []
                 for s in dirs:
-                    path = '/Volumes/T7/Repos/z_old/bg_remover/DATA/'+s+'_*'
-                    if (model == 'gen_d'):
+                    path = os.path.join(PATH_SOURCE,s)
+                    if (model == 'D'):
                         files = glob.glob(os.path.join(path,'*_d.*',))
                         length = len(files)
                         counts.append(length)
-                    if (model == 'gen_v'):
+                    if (model == 'V'):
                         files = glob.glob(os.path.join(path,'*_v.*',))
                         length = len(files)
                         counts.append(length)
-                    if (model == 'gen_a'):
+                    if (model == 'A'):
                         files = glob.glob(os.path.join(path,'*_a.*',))
                         length = len(files)
                         counts.append(length)
                 
-                class_nr = len(os.listdir('/Volumes/T7/Repos/splitter/HQ_cls/'+model+'/test/'))
+                class_nr = len(os.listdir(os.path.join(PATH_MAIN,model,'test')))
                 nrs = []
                 for x in range(class_nr):
                     for _ in range(5):

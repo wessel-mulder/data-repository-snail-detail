@@ -2,7 +2,7 @@ import shutil
 import os 
 import sys
 
-main = 'splitter/models_sense2'
+main = 'mypath'             # path to folder containing datasets for each model
 dirs = [d for d in os.listdir(main) if os.path.isdir(os.path.join(main, d))]
 
 for model in dirs:
