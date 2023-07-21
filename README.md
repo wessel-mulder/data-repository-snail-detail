@@ -1,4 +1,4 @@
-# data-repository_snail-detail
+# data-repository-snail-detail
 This repository contains the scripts used in data pre-processing, synthetic-data generation, model-preparation and visualisation of results for my MSc thesis 'Snail detail: Identification of _Schistosoma_ intermediate host snails with synthetic-data trained computer vision networks'.
 
 This folder is divided as per these four 'main' computational steps, along with some example images and data so one can visualise how the scripts work. 
