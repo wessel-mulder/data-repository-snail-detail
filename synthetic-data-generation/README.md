@@ -1,0 +1,2 @@
+  The Python script _synthetic-data-generator.py_ was used to generate synthetic images from the backgroundless, cropped high-quality snails created in pre-processing. \\
+  First, a set of parameters are defined, like the sizes of the background and the values used in compositing of synthetic images and image augmentation. A transparent image function is used to overlay the 'transparent' pixels of the png-snails over the background.  
