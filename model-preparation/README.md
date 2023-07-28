@@ -1,6 +1,6 @@
 # This folder contains multiple scripts for splitting the data into training/validation subsets for classification and detection
 
-For the **detection tasks**, the following scripts were used:
+For the **synthetic-trained detection tasks**, the following scripts were used:
 
 _data-splitter-for-detection.py_ was used to split the synthetic-images into a training and a validation subset.
 
